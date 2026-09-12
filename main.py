@@ -17,6 +17,9 @@ from src.models.sarima import SARIMAModel
 from src.pipeline import ForecastPipeline
 from src.models.ets import ETSModel
 
+from src.features.lag_features import LagFeatureFeaturizer
+from src.models.xgboost_model import XGBoostModel
+
 def mape(forecast: pd.Series, actual: pd.Series) -> float:
     return (abs(forecast.values - actual.values) / actual.values).mean() * 100
 
@@ -44,6 +47,9 @@ def main():
         ),
         "ETS (Holt-Winters, mul)": ForecastPipeline(
             RawPassthroughFeaturizer(), ETSModel(trend="mul", seasonal="mul", seasonal_periods=12)
+        ),
+        "XGBoost (lag features)": ForecastPipeline(
+            LagFeatureFeaturizer(n_lags=13), XGBoostModel(n_estimators=200, max_depth=3, learning_rate=0.05)
         ),
     }
 
