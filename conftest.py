@@ -1,3 +1,7 @@
+import os
+os.environ.setdefault("KMP_DUPLICATE_LIB_OK", "TRUE")  # avoid XGBoost/PyTorch OpenMP conflict on macOS (segfault otherwise)
+os.environ.setdefault("KMP_DUPLICATE_LIB_OK", "TRUE")
+os.environ.setdefault("OMP_NUM_THREADS", "1")
 import pytest
 from pathlib import Path
 
