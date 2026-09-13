@@ -17,7 +17,8 @@ from src.models.ets import ETSModel
 from src.models.xgboost_model import XGBoostModel
 from src.pipeline import ForecastPipeline
 from src.evaluation.walk_forward import walk_forward_validate, summarize
-
+from src.features.windowed import WindowedFeaturizer
+from src.models.lstm_model import LSTMModel
 
 def main():
     source = LocalCSVSource(
@@ -36,6 +37,9 @@ def main():
         ),
         "XGBoost (lag features)": lambda: ForecastPipeline(
             LagFeatureFeaturizer(n_lags=13), XGBoostModel(n_estimators=200, max_depth=3, learning_rate=0.05)
+        ),
+        "LSTM (direct multi-output)": lambda: ForecastPipeline(
+            WindowedFeaturizer(window_size=12, horizon=12), LSTMModel(hidden_size=4)
         ),
     }
 
